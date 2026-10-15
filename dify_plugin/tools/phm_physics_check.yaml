@@ -1,0 +1,76 @@
+identity:
+  name: phm_physics_check
+  author: PHM-Audit
+  label:
+    en_US: PHM Physics Check
+    zh_Hans: PHM 物理校验
+description:
+  en_US: >-
+    Deterministic physics plausibility check on text. Returns PASS / WARN / FAIL
+    with structured violations. Checks universal physical laws only; unknown
+    units are ignored (no false positives). Deterministic and reproducible.
+  zh_Hans: >-
+    对文本做确定性物理合理性判定，返回 PASS / WARN / FAIL 与结构化违规明细。
+    仅校验普适物理定律；未知单位忽略（零误报设计）。判定确定且可复算。
+parameters:
+  - name: text
+    type: string
+    required: true
+    label:
+      en_US: Text to check
+      zh_Hans: 待检文本
+    human_description:
+      en_US: LLM output or any text containing physical quantities.
+      zh_Hans: 大模型输出或任何含物理量的文本。
+    llm_description: Text to verify against universal physical laws.
+    form: llm
+  - name: kinematics_json
+    type: string
+    required: false
+    label:
+      en_US: Kinematic values (JSON, optional)
+      zh_Hans: 运动学数值（JSON，可选）
+    human_description:
+      en_US: >-
+        Optional JSON object with SI kinematic values to cross-check internal
+        consistency, e.g. {"v0": 0, "a": 9.8, "t": 3.0, "v": 50}. Keys: v0, v,
+        a, t, s, h. Any subset is accepted.
+      zh_Hans: >-
+        可选JSON，提供SI单位运动学数值以做内部一致性交叉验证，如
+        {"v0":0,"a":9.8,"t":3.0,"v":50}。键：v0/v/a/t/s/h，任意子集。
+    llm_description: >-
+      Optional JSON object of SI kinematic values: v0, v, a, t, s, h.
+      Provide only the values stated in the text.
+    form: llm
+output_schema:
+  type: object
+  properties:
+    verdict:
+      type: string
+      enum: [PASS, WARN, FAIL]
+      description: Final judgment over all checks.
+    n_quantities_checked:
+      type: integer
+      description: Number of quantities scanned and checked.
+    violations:
+      type: array
+      items:
+        type: object
+        properties:
+          rule:
+            type: string
+          severity:
+            type: string
+          detail:
+            type: string
+          location:
+            type: string
+    engine:
+      type: string
+    version:
+      type: string
+    deterministic:
+      type: boolean
+extra:
+  python:
+    source: tools/phm_physics_check.py
