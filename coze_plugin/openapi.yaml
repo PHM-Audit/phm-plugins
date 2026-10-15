@@ -1,0 +1,64 @@
+openapi: 3.0.3
+info:
+  title: PHM Physics Check
+  description: >-
+    Deterministic physics plausibility checker. POST text containing physical
+    quantities; get a PASS / WARN / FAIL verdict with structured violations.
+    Universal laws only: speed-of-light limit, absolute zero, probability
+    range, kinematics, conservation. Offline core, no data retention.
+  version: 1.0.0
+servers:
+  - url: https://YOUR-DEPLOYED-HOST/v1
+    description: Replace with your deployed PHM-Lite service host
+paths:
+  /physics/check:
+    post:
+      operationId: physicsCheck
+      summary: Check text for physical plausibility
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text]
+              properties:
+                text:
+                  type: string
+                  description: Text to verify (LLM output or any physical claim).
+                  example: "The drone descends at 450 km/h and lands after 12 s."
+                kinematics:
+                  type: object
+                  description: Optional SI kinematic values stated in the text.
+                  properties:
+                    v0: { type: number }
+                    v: { type: number }
+                    a: { type: number }
+                    t: { type: number }
+                    s: { type: number }
+                    h: { type: number }
+      responses:
+        "200":
+          description: Verdict with structured violations.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  verdict:
+                    type: string
+                    enum: [PASS, WARN, FAIL]
+                  n_quantities_checked:
+                    type: integer
+                  violations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rule: { type: string }
+                        severity: { type: string }
+                        detail: { type: string }
+                        location: { type: string }
+                  engine: { type: string }
+                  version: { type: string }
+                  deterministic: { type: boolean }
