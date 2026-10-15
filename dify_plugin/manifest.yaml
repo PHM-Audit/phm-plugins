@@ -1,0 +1,31 @@
+name: phm-physics-check
+version: 1.0.0
+type: plugin
+author: PHM-Audit
+label:
+  en_US: PHM Physics Check
+  zh_Hans: PHM 物理校验
+description:
+  en_US: >-
+    Deterministic physics plausibility checker for LLM outputs. Scans text for
+    quantities with physical units and verifies universal physical laws (speed
+    of light limit, absolute zero, kinematics, conservation, probability range).
+    Zero network calls, sub-millisecond, fully reproducible verdicts.
+  zh_Hans: >-
+    面向大模型输出的确定性物理合理性校验。扫描文本中的物理量并依据普适物理定律判定
+    （光速上限、绝对零度、运动学关系、守恒律、概率区间）。零网络调用、亚毫秒级、判定可复算。
+tags:
+  - validation
+  - safety
+  - science
+plugins:
+  tools:
+    - tools/phm_physics_check.yaml
+meta:
+  version: 1.0.0
+  arch: [amd64, arm64]
+  runner:
+    language: python
+    version: "3.12"
+  minimum_dify_version: "0.15.0"
+privacy_policy_url: "https://github.com/PHM-Audit"
